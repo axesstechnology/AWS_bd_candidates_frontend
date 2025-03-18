@@ -54,34 +54,11 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
 
   const { Text } = Typography;
 
-  const documentOptions = [
-    { label: "E-Aadhar  ", value: "e_aadhar" },
-    { label: "HSC  ", value: "hsc" },
-    { label: "PAN Card  ", value: "pan_card" },
-    { label: "Passport  ", value: "passport" },
-    { label: "Passport Size Photo  ", value: "passport_size_photo" },
-    { label: "PG Certificates  ", value: "pg_certificates" },
-    { label: "SSLC  ", value: "sslc" },
-    {
-      label: "UG Consolidated Marksheet  ",
-      value: "ug_consolidated_marksheet",
-    },
-    { label: "UG Degree Certificate  ", value: "ug_degree_certificate" },
-    {
-      label: "UG Provisional Certificate  ",
-      value: "ug_provisional_certificate",
-    },
-  ];
-
   const handleInitialAmount = (e: any) => {
     setIsInitialAmount(e.target.value === "yes");
   };
 
-  const nonSubmissionReasons = [
-    { label: "Fully Paid", value: "fully_paid" },
-    { label: "Only During Offer", value: "only_during_offer" },
-    { label: "Following Up to Collect", value: "following_up" },
-  ];
+
   const handleDocumentsSubmittedChange = (e: any) => {
     const value = e.target.value;
 
@@ -126,7 +103,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
 
       <Form.Item
         label={<Text strong>Initial Amount</Text>}
-        // name="Total Amount"
+        name="Initial Amount Received"
         // rules={[{ required: true, message: "Please input!" }]}
       >
               <Radio.Group onChange={handleInitialAmount}>
@@ -332,7 +309,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
             onChange={handleDocumentChange}
             value={selectedDocuments}
           >
-            {documentOptions.map((doc) => (
+            {dropdownOptions.documentOptions?.map((doc) => (
               <Checkbox
                 key={doc.value}
                 value={doc.value}
@@ -352,7 +329,7 @@ const PaymentDetails: React.FC<PaymentDetailsProps> = ({
           rules={[{ required: true, message: "Please Select a Reason!" }]}
         >
           <Select placeholder="Select reason for not submitting documents">
-            {nonSubmissionReasons.map((reason) => (
+            {dropdownOptions.nonSubmissionReasons?.map((reason) => (
               <Option key={reason.value} value={reason.value}>
                 {reason.label}
               </Option>

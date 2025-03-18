@@ -130,8 +130,6 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
     }
   };
 
-  
-
   return (
     <div className="space-y-6">
       {/* student Id */}
@@ -173,8 +171,34 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
             message: "Name can only contain letters and spaces!",
           },
         ]}
-      > 
-        <Input placeholder="Enter Candidate Name"/>
+      >
+        <Input placeholder="Enter Candidate Name" />
+      </Form.Item>
+
+      <Form.Item
+        name="agentName"
+        label={<Text strong>Agent Name</Text>}
+        rules={[{ required: true, message: "Please select!" }]}
+      >
+        <Select placeholder="Agent Name">
+          {dropdownOptions.agentName.map((category, index) => (
+            <Option key={`${index}`} value={category}>
+              {capitalize(category)}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        name="joiningMonth"
+        label={<Text strong>Joining Month</Text>}
+        rules={[{ required: true, message: "Please select!" }]}
+      >
+        <DatePicker
+          picker="month"
+          format="YYYY-MM"
+          placeholder="Select Month & Year"
+        />
       </Form.Item>
 
       <Form.Item
@@ -223,13 +247,13 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
             {dropdownOptions.inActivereasons.map((category, index) => (
               <Option key={`${index}`} value={category}>
                 {capitalize(category)}
-              </Option> 
+              </Option>
             ))}
           </Select>
         </Form.Item>
       )}
 
-<Form.Item name="Agreement" label={<Text strong>Agreement</Text>}>
+      <Form.Item name="Agreement" label={<Text strong>Agreement</Text>}>
         <Row align="middle" gutter={16}>
           {/* Agreement Radio Group */}
           <Col>
@@ -409,8 +433,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
             </Upload>
           </Form.Item>
         </>
-      )}  
-
+      )}
 
       {selectedCategory === "Backdoor" && (
         <Form.Item
@@ -444,7 +467,11 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
           },
         ]}
       >
-        <Input addonBefore="+91" style={{ width: "100%" }} placeholder="Enter Phone Number"/>
+        <Input
+          addonBefore="+91"
+          style={{ width: "100%" }}
+          placeholder="Enter Phone Number"
+        />
       </Form.Item>
 
       <Form.Item
@@ -455,7 +482,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
           { type: "email", message: "Please enter a valid Email Address!" },
         ]}
       >
-        <Input placeholder="Enter Mail ID "/>
+        <Input placeholder="Enter Mail ID " />
       </Form.Item>
 
       {/* stage */}

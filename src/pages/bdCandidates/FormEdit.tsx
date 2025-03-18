@@ -31,6 +31,8 @@ import { FaPlusCircle } from "react-icons/fa";
 import { usePaymentCalculations } from "./Paymentcalculations";
 import FormEditAgreement from "./FormEditAgreement";
 import { usePaymentContext } from "../../context/PaymentContext";
+import dayjs from "dayjs";
+
 
 const { Text } = Typography;
 
@@ -45,7 +47,13 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
   const [noOfferSplitCount, setNoOfferSplitCount] = useState(2);
   const [offerSplitCount, setOfferSplitCount] = useState(2);
   const [pendingPayments, setPendingPayments] = useState<number[]>([]);
-  const {balanceAmontValue, setBalanceAmontValue } = usePaymentContext();
+  const { balanceAmontValue, setBalanceAmontValue } = usePaymentContext();
+  const [documentsSubmitted, setDocumentsSubmitted] = useState<string | null>(initialData?.["Documents Submitted"] === "yes" ? "yes" : "no");
+  const [selectedDocuments, setSelectedDocuments] = useState<string[]>([]);
+
+  console.log(documentsSubmitted,"documentsSubmitted");
+  
+
   const [isProfileCreated, setIsProfileCreated] = useState(
     initialData?.["Profile Created"] === "yes"
   );
@@ -63,10 +71,18 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
   const [selectedCategory, setSelectedCategory] = useState(
     initialData?.["BD category"] || ""
   );
-  const [isInitialAmount, setIsInitialAmount] = useState(false);
+  const [isInitialAmount, setIsInitialAmount] = useState(
+    initialData?.["Initial Amount Received"] === "yes"
+  );
 
-  const [isAcknowledgementYes, setIsAcknowledgementYes] = useState(false);
+  const [isAcknowledgementYes, setIsAcknowledgementYes] = useState(
+    initialData?.["Acknowledgement"] === "yes"
+  );
   const [checkedForms, setCheckedForms] = useState<string[]>([]);
+  const [isOnboarded, setIsOnboarded] = useState(
+    initialData?.["onboarded"] === "yes"
+  );
+
   const prefixSelector = (
     <Form.Item name="prefix" noStyle>
       <Select style={{ width: 70 }}>
@@ -75,6 +91,7 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
     </Form.Item>
   );
   console.log("isAgreementYes", isAgreementYes);
+  console.log("isInitialAmount", isInitialAmount);
 
   console.log("initialData in form Edit", initialData);
   console.log(initialData?.Agreement === "yes");
@@ -150,6 +167,37 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
       });
     }
   };
+
+  const handleDocumentsSubmittedChange = (e: any) => {
+    const value = e.target.value;
+
+    console.log("value",value);
+    
+    setDocumentsSubmitted(value);
+
+    // Reset related fields when changing
+    form.setFieldsValue({
+      requiredDocuments: undefined,
+      nonSubmissionReason: undefined,
+    });
+
+    // Clear selected documents if switching to "no"
+    if (value === "no") {
+      setSelectedDocuments([]);
+    }
+    
+  };
+
+  const handleDocumentChange = (checkedValues: string[]) => {
+    // Update the state with only selected documents
+    setSelectedDocuments(checkedValues);
+
+    // Set the form field value to only the selected documents
+    form.setFieldsValue({
+      requiredDocuments: checkedValues,
+    });
+  };
+
 
   const {
     initialAmountSplits,
@@ -356,6 +404,10 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
     setSelectedCategory(value);
   };
 
+  const handleOnboardedChange = (e: any) => {
+    setIsOnboarded(e.target.value === "yes");
+  };
+
   return (
     <div className="space-y-6">
       {/* <FormEditAgreement 
@@ -409,6 +461,38 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
           </Radio.Button>
           <Radio.Button value="software_testing">Software Testing</Radio.Button>
         </Radio.Group>
+      </Form.Item>
+
+      <Form.Item
+        name="agentName"
+        label={<Text strong>Agent Name</Text>}
+        rules={[{ required: true, message: "Please select an option!" }]}
+      >
+        <Select
+          placeholder="Select Reason"
+          defaultValue={initialData?.agentName}
+        >
+          {dropdownOptions.agentName.map((category, index) => (
+            <Option key={`${index}`} value={category}>
+              {capitalize(category)}
+            </Option>
+          ))}
+        </Select>
+      </Form.Item>
+
+      <Form.Item
+        name="joiningMonth"
+        label={<Text strong>Joining Month</Text>}
+        rules={[{ required: true, message: "Please select!" }]}
+      >
+        <DatePicker
+          picker="month"
+          format="YYYY-MM"
+          placeholder="Select Month & Year"
+          defaultValue={
+            initialData?.joiningMonth ? dayjs(initialData.joiningMonth) : null
+          }
+        />
       </Form.Item>
 
       {/* Inactive/Active */}
@@ -534,7 +618,10 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
       >
         <Row align="middle" gutter={16}>
           <Col>
-            <Radio.Group onChange={handleAcknowledgementChange}>
+            <Radio.Group
+              onChange={handleAcknowledgementChange}
+              defaultValue={initialData?.["Acknowledgement"]}
+            >
               <Radio.Button value="yes">Yes</Radio.Button>
               <Radio.Button value="no">No</Radio.Button>
             </Radio.Group>
@@ -747,11 +834,14 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
       </Form.Item>
 
       <Form.Item
-        label={<Text strong>Initial Amount</Text>}
-        // name="Total Amount"
+        label={<Text strong>Initial Amount Received</Text>}
+        name="Initial Amount Received"
         // rules={[{ required: true, message: "Please input!" }]}
       >
-        <Radio.Group onChange={handleInitialAmount}>
+        <Radio.Group
+          onChange={handleInitialAmount}
+          defaultValue={initialData?.initialAmountReceived ? "yes" : "no"}
+        >
           <Radio.Button value="yes">Yes</Radio.Button>
           <Radio.Button value="no">No</Radio.Button>
         </Radio.Group>
@@ -863,7 +953,7 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
       )}
 
       <Form.Item
-         label={<Text strong>Balance Amount</Text>}
+        label={<Text strong>Balance Amount</Text>}
         name="Balance Amount"
         initialValue={form.getFieldValue("Balance Amount") || 0}
         // rules={[{ required: true, message: "Please input!" }]}
@@ -872,7 +962,7 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
       </Form.Item>
 
       {balanceAmontValue > 0 && (
-      // {form.getFieldValue("Balance Amount")  > 0 && (
+        // {form.getFieldValue("Balance Amount")  > 0 && (
         <>
           <Form.Item label={<Text strong>Payment for Interview</Text>}>
             <Row align="middle" gutter={16}>
@@ -898,7 +988,7 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
                 <Form.Item
                   name="Payment_for_Interview_Date"
                   style={{ marginBottom: 0 }}
-                  rules={[{ required: true, message: "Please Select Date!" }]}
+                  // rules={[{ required: true, message: "Please Select Date!" }]}
                 >
                   <DatePicker placeholder="Select Date" />
                 </Form.Item>
@@ -930,7 +1020,7 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
                 <Form.Item
                   name="Payment_for_Documents_Date"
                   style={{ marginBottom: 0 }}
-                  rules={[{ required: true, message: "Please Select Date!" }]}
+                  // rules={[{ required: true, message: "Please Select Date!" }]}
                 >
                   <DatePicker placeholder="Select Date" />
                 </Form.Item>
@@ -960,7 +1050,7 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
                 <Form.Item
                   name="payment_for_offer_date"
                   style={{ marginBottom: 0 }}
-                  rules={[{ required: true, message: "Please Select Date!" }]}
+                  // rules={[{ required: true, message: "Please Select Date!" }]}
                 >
                   <DatePicker placeholder="Select Date" />
                 </Form.Item>
@@ -970,7 +1060,7 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
         </>
       )}
 
-<Form.Item
+      <Form.Item
         name="Did Offer Received"
         label={<Text strong>Offer Received</Text>}
         rules={
@@ -981,7 +1071,10 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
       >
         <Row align="middle" gutter={16}>
           <Col>
-            <Radio.Group onChange={handleOfferReceivedChange}>
+            <Radio.Group
+              onChange={handleOfferReceivedChange}
+              defaultValue={initialData?.["Did Offer Received"]}
+            >
               <Radio.Button value="yes">Yes</Radio.Button>
               <Radio.Button value="no">No</Radio.Button>
             </Radio.Group>
@@ -992,7 +1085,11 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
               // label="Date of Offer"
               name="Date of Offer"
               style={{ marginBottom: 0 }}
-              rules={offerReceived === "yes" ?[{ required: true, message: "Please Select Date!" }] :[]}
+              rules={
+                offerReceived === "yes"
+                  ? [{ required: true, message: "Please Select Date!" }]
+                  : []
+              }
             >
               <DatePicker disabled={offerReceived !== "yes"} />
             </Form.Item>
@@ -1026,7 +1123,7 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
             />
           </Form.Item> */}
 
-          {/* {[...Array(noOfferSplitCount)].map((_, index) => (
+      {/* {[...Array(noOfferSplitCount)].map((_, index) => (
             <Form.Item
               key={index}
               label={`Split ${index + 1}`}
@@ -1051,9 +1148,9 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
               Add Split
             </Button>
           </Form.Item> */}
-        {/* </>
+      {/* </>
       )} */}
-         {balanceAmontValue > 0 && offerReceived === "yes" && (
+      {balanceAmontValue > 0 && offerReceived === "yes" && (
         <>
           <Form.Item
             label="pending payment in splits"
@@ -1124,14 +1221,17 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
         </>
       )}
 
-{offerReceived === "yes" && (
+      {offerReceived === "yes" && (
         <>
           <Form.Item
-            name="OnBoarded"
+            name="onboarded"
             label={<Text strong>Onboarded</Text>}
             rules={[{ required: true, message: "Please Select Yes or No!" }]}
           >
-            <Radio.Group>
+            <Radio.Group
+              onChange={handleOnboardedChange}
+              defaultValue={initialData?.onboarded ? "yes" : "no"}
+            >
               <Radio.Button value="yes">Yes</Radio.Button>
               <Radio.Button value="no">No</Radio.Button>
             </Radio.Group>
@@ -1166,7 +1266,6 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
           </div> */}
         </>
       )}
-
 
       <div style={{ margin: "24px 0" }} />
       <Form.Item
@@ -1203,14 +1302,52 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
         label={<Text strong>Documents Submitted</Text>}
         rules={[{ required: true, message: "Please pick an item!" }]}
       >
-        <Radio.Group
-        // onChange={handleDocumentChange}
-        >
+        <Radio.Group onChange={handleDocumentsSubmittedChange} defaultValue={initialData?.["Documents Submitted"]}        >
           <Radio.Button value="yes">Yes</Radio.Button>
           <Radio.Button value="no">No</Radio.Button>
         </Radio.Group>
       </Form.Item>
-    </div>
+
+      <Form.Item>
+  {documentsSubmitted === "yes" ? (
+    <Form.Item
+      name="requiredDocuments"
+      label={<Text strong>Received Documents</Text>}
+      rules={[{ required: true, message: "Please select at least one document!" }]}
+    >
+      <Checkbox.Group
+        style={{ display: "flex", flexDirection: "column" }}
+        onChange={handleDocumentChange}
+        value={selectedDocuments}
+        defaultValue={initialData?.["Received Documents"]}
+      >
+        {dropdownOptions.documentOptions?.map((doc) => (
+          <Checkbox key={doc.value} value={doc.value} style={{ marginBottom: "8px" }}>
+            {doc.label}
+          </Checkbox>
+        ))}
+      </Checkbox.Group>
+    </Form.Item>
+  ) : (
+    <Form.Item
+      name="nonSubmissionReason"
+      label={<Text strong>Reason for Not Submitting Documents</Text>}
+      rules={[{ required: true, message: "Please select a reason!" }]}
+      
+    >
+      <Select placeholder="Select reason for not submitting documents" defaultValue={initialData?.nonSubmissionReason}>
+        {dropdownOptions.nonSubmissionReasons?.map((reason) => (
+          <Select.Option key={reason.value} value={reason.value}>
+            {reason.label}
+          </Select.Option>
+        ))}
+      </Select>
+    </Form.Item>
+  )}
+</Form.Item>
+ 
+  
+ </div>
   );
 };
 

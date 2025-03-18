@@ -60,7 +60,7 @@ export interface FormData {
   "Date of Offer": moment.Moment | null;
   "Referred By": string;
   "Documents Submitted": "yes" | "no";
-  "OnBoarded"?: "yes" | "no";
+  onboarded?: "yes" | "no";
   [key: string]: any;
 
 }
