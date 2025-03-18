@@ -577,7 +577,17 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
             </Checkbox.Group>
           </Form.Item>
 
-          {checkedForms.map((form) => (
+          <Form.Item
+        label={<Text strong>Agreement Document</Text>}
+        name="agreementDocument"
+        rules={[{ required: true, message: "Please input!" }]}
+      >
+        <Input  placeholder="Enter agreement document" defaultValue={initialData?.agreementDocument}/>
+      </Form.Item>
+
+
+
+          {/* {checkedForms.map((form) => (
             <Form.Item
               key={form}
               name={`File Upload ${form}`}
@@ -607,7 +617,7 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
                 </div>
               </Upload>
             </Form.Item>
-          ))}
+          ))} */}
         </>
       )}
 
@@ -647,26 +657,41 @@ const FormEdit: React.FC<FormEditProps> = ({ form, initialData, formData }) => {
       </Form.Item>
 
       {isAcknowledgementYes && (
-        <Form.Item
-          name="Acknowledgement File"
-          label="Upload Acknowledgement File"
-          rules={[
-            {
-              required: true,
-              message: "Please upload the acknowledgement file!",
-            },
-          ]}
-        >
-          <Upload
-            beforeUpload={(file) => {
-              return false;
-            }}
-          >
-            <div>
-              <UploadOutlined /> Click to Upload
-            </div>
-          </Upload>
-        </Form.Item>
+                  <Form.Item
+                  label={<Text strong>Acknowledgement Document</Text>}
+                  name="acknowledgementDocument"
+                  rules={[{ required: true, message: "Please input!" }]}
+                >
+                  <Input  placeholder="Enter acknowledgement document" defaultValue={initialData?.acknowledgementDocument}/>
+                </Form.Item>
+        // <Form.Item
+        //   name="Acknowledgement File"
+        //   label="Upload Acknowledgement File"
+        //   rules={[
+        //     {
+        //       required: true,
+        //       message: "Please upload the acknowledgement file!",
+        //     },
+        //   ]}
+        // >
+        //           <Upload
+        //         customRequest={({ file, onSuccess, onError }) => {
+        //           handleFileUpload({ file })
+        //             .then((cleanFile) => {
+        //               if (cleanFile) {
+        //                 onSuccess?.(cleanFile);
+        //               } else {
+        //                 onError?.(new Error("File upload failed"));
+        //               }
+        //             })
+        //             .catch((error) => onError?.(error));
+        //         }}
+        //   >
+        //     <div>
+        //       <UploadOutlined /> Click to Upload
+        //     </div>
+        //   </Upload>
+        // </Form.Item>
       )}
 
       {/* job type */}

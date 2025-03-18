@@ -303,7 +303,17 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
             </Checkbox.Group>
           </Form.Item>
 
-          {checkedForms.map((form) => (
+          <Form.Item
+            label={<Text strong>Agreement Document</Text>}
+            name="agreementDocument"
+            rules={[
+              { required: true, message: "Please input Agreement Document!" },
+            ]}
+          >
+            <Input placeholder="Enter Agreement Document Link " />
+          </Form.Item>
+
+          {/* {checkedForms.map((form) => (
             <Form.Item
               key={form}
               name={`File Upload ${form}`}
@@ -336,7 +346,7 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                 </div>
               </Upload>
             </Form.Item>
-          ))}
+          ))} */}
           {/* {checkedForms.map((form) => (
             <Form.Item
               key={form}
@@ -412,7 +422,8 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
           >
             <DatePicker style={{ width: "100%" }} />
           </Form.Item> */}
-          <Form.Item
+
+          {/* <Form.Item
             name="Acknowledgement File"
             label="Upload Acknowledgement File"
             rules={[
@@ -431,6 +442,19 @@ const PersonalDetails: React.FC<PersonalDetailsProps> = ({
                 <UploadOutlined /> Click to Upload
               </div>
             </Upload>
+          </Form.Item> */}
+
+          <Form.Item
+            label={<Text strong>Acknowledgement Document</Text>}
+            name="acknowledgementDocument"
+            rules={[
+              {
+                required: true,
+                message: "Please input Acknowledgement Document!",
+              },
+            ]}
+          >
+            <Input placeholder="Enter Acknowledgement Document" />
           </Form.Item>
         </>
       )}

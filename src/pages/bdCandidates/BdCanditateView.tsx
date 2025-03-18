@@ -22,6 +22,7 @@ import { FaBuilding, FaChevronLeft } from "react-icons/fa";
 import { FaRegMessage } from "react-icons/fa6";
 import DocumentViewer from "../../components/DocumentViewer";
 import Loader from "../../utils/Loader";
+import GoogleDrivePDFViewer from "../../components/GoogleDrivePDFViewer";
 
 const BdCandidateView: React.FC = () => {
   const [candidate, setCandidate] = useState<any>(null);
@@ -81,8 +82,8 @@ const BdCandidateView: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-6">
-       {/* Header Section */}
-       <div className="flex items-center mb-8 space-x-4">
+      {/* Header Section */}
+      <div className="flex items-center mb-8 space-x-4">
         <h2 className="text-2xl font-extrabold bg-gradient-to-r from-blue-600 to-purple-600 text-transparent bg-clip-text px-6 py-3 rounded-lg shadow-lg transform transition-all duration-500 ease-in-out flex items-center">
           <FaChevronLeft
             onClick={() => Navigate("/bdcandidates")}
@@ -348,8 +349,26 @@ const BdCandidateView: React.FC = () => {
               }
               className="mt-6"
             >
-              <div className="space-y-4">
-                {candidate.formUploads.map((form: any) => (
+              <div className="space-y-4 flex justify-between flex-col ">
+                {
+                  candidate.agreementDocument && (
+                    <div className=" flex  justify-between items-center">
+                    <h1>Agreement</h1>
+                    <GoogleDrivePDFViewer file={candidate.agreementDocument} />
+                  </div>
+                  )
+                }
+
+                {
+                  candidate.acknowledgementDocument && (
+                    <div className=" flex  justify-between items-center">
+                    <h1>Acknowledgement</h1>
+                    <GoogleDrivePDFViewer file={candidate.acknowledgementDocument} />
+                  </div>
+                  )
+                }
+             
+                {/* {candidate.formUploads.map((form: any) => (
                   <div
                     key={form._id}
                     className="flex items-center justify-between border-b pb-2 mb-2"
@@ -360,7 +379,7 @@ const BdCandidateView: React.FC = () => {
                       base64={form.base64}
                     />
                   </div>
-                ))}
+                ))} */}
               </div>
             </Card>
 

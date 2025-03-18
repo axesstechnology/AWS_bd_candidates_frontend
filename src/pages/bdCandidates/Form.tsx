@@ -95,10 +95,13 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
             BDcategory: apiData.BDcategory,
             Agreement: apiData.agreement ? "yes" : "no",
             Acknowledgement: apiData.acknowledgement ? "yes" : "no",
+            agreementDocument: apiData.agreementDocument,
+            acknowledgementDocument: apiData.acknowledgementDocument,
             "Agreement Date": apiData.agreementDate
               ? moment(apiData.agreementDate)
               : null,
             Forms: apiData.forms,
+            formUploads: apiData.formUploads,
             "Acknowledgement Date": apiData.acknowledgementDate
               ? moment(apiData.acknowledgementDate)
               : null,
@@ -140,33 +143,67 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
             apiData.offerInstallments.forEach(
               (installment: any, index: number) => {
                 formattedData[`offer_installment_${index + 1}`] =
-                  installment.amount;
+                  installment.amount; 
               }
             );
           }
 
+          // if (apiData.formUploads?.length > 0) {
+          //   const fileFields = {};
+          //   apiData.formUploads.forEach((upload: any) => {
+          //     const decodedFile = new File(
+          //       [Uint8Array.from(atob(upload.base64), (c) => c.charCodeAt(0))],
+          //       upload.originalName,
+          //       { type: "application/octet-stream" } // Adjust MIME type as needed
+          //     );
+          //     const fileFields: { [key: string]: any } = {};
+          //     fileFields[`File Upload ${upload.form}`] = [
+          //       {
+          //         uid: upload._id,
+          //         name: upload.originalName,
+          //         status: "done",
+          //         url: "", // Optional, if there's a preview URL
+          //         originFileObj: decodedFile,
+          //       },
+          //     ];
+          //   });
+
+          //   Object.assign(formattedData, fileFields);
+          // } 
+
           if (apiData.formUploads?.length > 0) {
-            const fileFields = {};
+            const fileFields: { [key: string]: any } = {};
+          
             apiData.formUploads.forEach((upload: any) => {
-              const decodedFile = new File(
-                [Uint8Array.from(atob(upload.base64), (c) => c.charCodeAt(0))],
-                upload.originalName,
-                { type: "application/octet-stream" } // Adjust MIME type as needed
-              );
-              const fileFields: { [key: string]: any } = {};
+              // Convert Base64 to binary
+              const byteCharacters = atob(upload.base64);
+              const byteNumbers = new Array(byteCharacters.length);
+              for (let i = 0; i < byteCharacters.length; i++) {
+                byteNumbers[i] = byteCharacters.charCodeAt(i);
+              }
+              const byteArray = new Uint8Array(byteNumbers);
+          
+              // Create a File object
+              const decodedFile = new File([byteArray], upload.originalName, {
+                type: "application/pdf", // Adjust MIME type based on actual file type
+              });
+          
+              // Store in the fileFields object
               fileFields[`File Upload ${upload.form}`] = [
                 {
                   uid: upload._id,
                   name: upload.originalName,
                   status: "done",
-                  url: "", // Optional, if there's a preview URL
+                  url: "", // Optional: If you have a preview URL
                   originFileObj: decodedFile,
                 },
               ];
             });
-
+          
+            // Merge with formattedData
             Object.assign(formattedData, fileFields);
-          } 
+          }
+          
 
           if (apiData.offerInstallmentsPaid?.length > 0) {
             apiData.offerInstallmentsPaid.forEach(
@@ -254,7 +291,10 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
       nonSubmissionReason: values.nonSubmissionReason,
       agreement: values["Agreement"],
       agreementDate: values["Agreement"] === "yes" ? values["Agreement Date"]?.toISOString() : null,
+      acknowledgementDocument: values.acknowledgementDocument,
+      agreementDocument: values.agreementDocument,
       forms: values["Agreement"] === "yes" ? values["Forms"] : [],
+      formUploads: values["Agreement"] === "yes" ? values.formUploads : [],
       //  formUploads :  values["formUploads"] , 
       initial_splits: values["initial_splits"]?.map((split: any) => ({
         amount: split.amount,
