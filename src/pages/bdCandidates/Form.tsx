@@ -65,6 +65,8 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
             "BD category": apiData.BDcategory,
             "Candidate Full Name": apiData.fullName,
             "radio-button": apiData.class,
+            "agentName": apiData.agentName,
+            "joiningMonth": apiData.joiningMonth? moment(apiData.joiningMonth) : null,
             switch: apiData.isActive,
             "Need Job Type": apiData.jobType,
             phone: apiData.phoneNumber,
@@ -74,6 +76,7 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
               : null,
             "Total Amount": apiData.totalAmount,
             "Initial Amount": apiData.InitialAmount,
+            "Initial Amount Received": apiData.initialAmountReceived ? "yes" : "no",
             "Mode of Payment": apiData.modeOfPayment,
             "At Time of Offer Payment Paid Date": apiData.offerPaymentDate
               ? moment(apiData.offerPaymentDate)
@@ -88,7 +91,7 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
             "Referred By": apiData.referredBy,
             "Documents Submitted": apiData.documentsSubmitted ? "yes" : "no",
             Comments: apiData.comments,
-            OnBoarded: apiData.onboarded ? "yes" : "no",
+            onboarded: apiData.onboarded ? "yes" : "no",
             BDcategory: apiData.BDcategory,
             Agreement: apiData.agreement ? "yes" : "no",
             Acknowledgement: apiData.acknowledgement ? "yes" : "no",
@@ -114,6 +117,7 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
             ? moment(apiData.modelCreatedDate)
             : null,
             requiredDocuments: apiData.requiredDocuments,
+            nonSubmissionReason: apiData.nonSubmissionReason,
             initial_splits:
               apiData.initial_splits?.map((split: any) => ({
                 amount: split.amount,
@@ -209,10 +213,15 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
 
   const transformFormData = (values: FormData) => {
     console.log(values["Total Amount"], "datraq");
+    console.log(values["Initial Amount Received"], "datraq");
+    console.log(values.onboarded, "datraq");
+    
     return {
       backDoorId: values["Back Door ID"],
       fullName: values["Candidate Full Name"],
       class: values["radio-button"],
+      agentName: values["agentName"],
+      joiningMonth: values["joiningMonth"]?.toISOString(),
       isActive: values["switch"],
       jobType: values["Need Job Type"],
       phoneNumber: values["phone"],
@@ -221,6 +230,7 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
       totalAmount:
         values["Total Amount"] == undefined ? 0 : values["Total Amount"],
       InitialAmount: values["Initial Amount"],
+      initialAmountReceived: values["Initial Amount Received"] === "yes",
       modeOfPayment: values["Mode of Payment"],
       profilecreated: values["Profile Created"] === 'yes',
       profileCreatedOn: values["Profile Created"] === 'yes'?values["Profile Created On"]?.toISOString() : null,
@@ -238,9 +248,10 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
       referredBy: values["Referred By"],
       documentsSubmitted: values["Documents Submitted"] === "yes",
       comments: values["Comments"],
-      onBoarded: values["OnBoarded"] === "yes",
+      onboarded: values.onboarded === "yes"?true:false,
       BDcategory: values["BD category"],
       requiredDocuments: values["requiredDocuments"],
+      nonSubmissionReason: values.nonSubmissionReason,
       agreement: values["Agreement"],
       agreementDate: values["Agreement"] === "yes" ? values["Agreement Date"]?.toISOString() : null,
       forms: values["Agreement"] === "yes" ? values["Forms"] : [],
@@ -279,12 +290,21 @@ const Dashboard: React.FC<DashboardProps> = ({ mode = "create" }) => {
     };
   };
 
+  
+
+  useEffect(()=>{
+    console.log(formData, "formData for edit field values");
+    console.log(formData?.onboarded, "formData for edit field values");
+  },[formData])
+
   const handleSubmit = async (values: FormData) => {
     try {
       setLoading(true);
       console.log(values, "values");
       const payload = mode === "edit" ? transformFormData(values) : values;
       // const payload = transformFormData(values);
+      console.log(transformFormData(values), "transformFormData");
+      
       console.log(values, "values");
 
       const url =

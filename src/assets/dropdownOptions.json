@@ -2,8 +2,24 @@
     "referredBy": ["Manju meenakshi", "Manju", "Srimathi", "Bala" ,"N/A"],
     "BDcategory": ["Backdoor", "Interview Support", "Job Support", "TSDP", "Internship", "Only Course"],
     "ProfileCreators":["Paramesh","Rajesh","Naveen","Durga","Shubha","Krishnaraj"],
-    "inActivereasons":["Refunded", "Discontinued", "BD-Completed", "Refund Requested", "Idle"],
-    "BDStage":["Subject Matter Training", "Real-Time Training", "Scheduling Interviews" , "Received Offer"]
-
-  }
-  
+    "inActivereasons":["Refunded", "Discontinued", "BD-Completed", "Refund Requested", "Idle","Balance Payment Pending"],
+    "BDStage":["Subject Matter Training", "Real-Time Training","Profile OnGoing", "Scheduling Interviews" , "Received Offer"],
+    "agentName": ["Anitha", "Dayana", "Mary", "Naveen", "Preethi", "Priya", "Shakthi", "Vinitha"],
+    "documentOptions": [
+      { "label": "E-Aadhar", "value": "e_aadhar" },
+      { "label": "HSC", "value": "hsc" },
+      { "label": "PAN Card", "value": "pan_card" },
+      { "label": "Passport", "value": "passport" },
+      { "label": "Passport Size Photo", "value": "passport_size_photo" },
+      { "label": "PG Certificates", "value": "pg_certificates" },
+      { "label": "SSLC", "value": "sslc" },
+      { "label": "UG Consolidated Marksheet", "value": "ug_consolidated_marksheet" },
+      { "label": "UG Degree Certificate", "value": "ug_degree_certificate" },
+      { "label": "UG Provisional Certificate", "value": "ug_provisional_certificate" }
+    ],
+    "nonSubmissionReasons": [
+      { "label": "Fully Paid", "value": "fully_paid" },
+      { "label": "Only During Offer", "value": "only_during_offer" },
+      { "label": "Following Up to Collect", "value": "following_up" }
+    ]
+}

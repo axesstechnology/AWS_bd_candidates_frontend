@@ -22,6 +22,7 @@ const PaymentCalculations: React.FC<PaymentCalculationsProps> = ({
   const [noOfferSplitCount, setNoOfferSplitCount] = useState(2);
   // const [balanceAmontValue, setBalanceAmontValue] = useState(0);
   const {balanceAmontValue, setBalanceAmontValue } = usePaymentContext();
+  const [isOnboarded, setIsOnboarded] = useState(false);
 
 
   const { Text } = Typography;
@@ -172,6 +173,10 @@ const PaymentCalculations: React.FC<PaymentCalculationsProps> = ({
     }
 
     updateBalanceAmount();
+  };
+
+  const handleOnboardedChange = (e: any) => {
+    setIsOnboarded(e.target.value === "yes");
   };
 
   useEffect(() => {
@@ -329,7 +334,7 @@ const PaymentCalculations: React.FC<PaymentCalculationsProps> = ({
                 <Form.Item
                   name="Payment_for_Interview_Date"
                   style={{ marginBottom: 0 }}
-                  rules={[{ required: true, message: "Please Select Date!" }]}
+                  // rules={[{ required: true, message: "Please Select Date!" }]}
                 >
                   <DatePicker placeholder="Select Date" />
                 </Form.Item>
@@ -361,7 +366,7 @@ const PaymentCalculations: React.FC<PaymentCalculationsProps> = ({
                 <Form.Item
                   name="Payment_for_Documents_Date"
                   style={{ marginBottom: 0 }}
-                  rules={[{ required: true, message: "Please Select Date!" }]}
+                  // rules={[{ required: true, message: "Please Select Date!" }]}
                 >
                   <DatePicker placeholder="Select Date" />
                 </Form.Item>
@@ -391,7 +396,7 @@ const PaymentCalculations: React.FC<PaymentCalculationsProps> = ({
                 <Form.Item
                   name="payment_for_offer_date"
                   style={{ marginBottom: 0 }}
-                  rules={[{ required: true, message: "Please Select Date!" }]}
+                  // rules={[{ required: true, message: "Please Select Date!" }]}
                 >
                   <DatePicker placeholder="Select Date" />
                 </Form.Item>
@@ -505,11 +510,11 @@ const PaymentCalculations: React.FC<PaymentCalculationsProps> = ({
       {offerReceived === "yes" && (
         <>
           <Form.Item
-            name="OnBoarded"
+            name="onboarded"
             label={<Text strong>Onboarded</Text>}
             rules={[{ required: true, message: "Please Select Yes or No!" }]}
           >
-            <Radio.Group>
+            <Radio.Group onChange={handleOnboardedChange} >
               <Radio.Button value="yes">Yes</Radio.Button>
               <Radio.Button value="no">No</Radio.Button>
             </Radio.Group>
